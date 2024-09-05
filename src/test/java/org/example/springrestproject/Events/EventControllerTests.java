@@ -7,15 +7,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.hateoas.MediaTypes;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.head;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 @WebMvcTest(controllers = EventController.class)
@@ -52,9 +53,11 @@ public class EventControllerTests {
                         .accept(MediaTypes.HAL_JSON)
                         .content(jacksonObjectMapper.writeValueAsString(event)))
                 .andDo(print()) // 어떤 요청과 응답을 받았는지 확인
+                // do에서 보이는 내용을 andExpect로 검증한다.
                 .andExpect(status().isCreated()) // JSON 응답 201
-                .andExpect(jsonPath("id").exists()); // id가 존재하는지 확인
-
+                .andExpect(jsonPath("id").exists()) // id가 존재하는지 확인
+                .andExpect(header().exists(HttpHeaders.LOCATION))
+                .andExpect(header().string("Content-Type", MediaTypes.HAL_JSON_VALUE));
 
     }
 }
