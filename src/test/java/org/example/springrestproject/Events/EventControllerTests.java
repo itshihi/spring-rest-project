@@ -35,10 +35,10 @@ public class EventControllerTests {
 //    @MockBean
 //    EventRepository eventRepository;
 
+    // 입력값이 제대로 들어오는 경우
     @Test
     public void createEvent() throws Exception {
-        Event event = Event.builder()
-                .id(12)
+        EventDTO event = EventDTO.builder()
                 .name("Spring")
                 .description("This is a Spring")
                 .beginEnrollmentDateTime(LocalDateTime.of(2024, 9, 5, 10, 45))
@@ -49,11 +49,7 @@ public class EventControllerTests {
                 .maxPrice(200)
                 .limitOfEnrollment(100)
                 .location("정자역")
-                .free(true)
-                .offLine(false)
-                .eventStatus(EventStatus.d)
                 .build();
-        event.setId(100);
 //        Mockito.when(eventRepository.save(event)).thenReturn(event);
 
         mockMvc.perform(post("/api/events")
@@ -70,6 +66,36 @@ public class EventControllerTests {
                 .andExpect(jsonPath("id").value(Matchers.not(100)))
                 .andExpect(jsonPath("free").value(Matchers.not(true)))
                 .andExpect(jsonPath("eventStatus").value(EventStatus.DRAFT.name()));
+
+    }
+
+    @Test
+    public void createEvent_Bad_Request() throws Exception {
+        Event event = Event.builder()
+                .id(100)
+                .name("Spring")
+                .description("This is a Spring")
+                .beginEnrollmentDateTime(LocalDateTime.of(2024, 9, 5, 10, 45))
+                .endEnrollmentDateTime(LocalDateTime.of(2024, 9, 6, 10, 45))
+                .beginEventDateTime(LocalDateTime.of(2024, 9, 7, 18, 0))
+                .endEventDateTime(LocalDateTime.of(2024, 9, 7, 21, 0))
+                .basePrice(100)
+                .maxPrice(200)
+                .limitOfEnrollment(100)
+                .location("정자역")
+                .free(true)
+                .offLine(false)
+                .eventStatus(EventStatus.PUBLISHED)
+                .build();
+
+        mockMvc.perform(post("/api/events")
+                        .contentType(MediaType.APPLICATION_JSON) //perform 안에 들어가는 것이 요청
+                        .accept(MediaTypes.HAL_JSON)
+                        .content(jacksonObjectMapper.writeValueAsString(event))) // 처리한 요청을 json string 형식으로 변환
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+
+        ;
 
     }
 }
