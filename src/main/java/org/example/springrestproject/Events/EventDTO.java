@@ -1,16 +1,13 @@
 package org.example.springrestproject.Events;
 
-import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Builder
-@AllArgsConstructor @NoArgsConstructor @Getter @Setter @EqualsAndHashCode(of = "id")
-@Entity
-public class Event {
-    @Id @GeneratedValue
-    private Integer id;
+// 입력값을 받는 객체만 dto에 해당
+//dto에 validation과 관련된 어노를 따로 분류한다.controller에 모든 어노를 작성하면 보기 힘들어서..
+@Builder @NoArgsConstructor @AllArgsConstructor @Data
+public class EventDTO {
     private String name;
     private String description;
     private LocalDateTime beginEnrollmentDateTime;
@@ -21,9 +18,5 @@ public class Event {
     private int basePrice;
     private int maxPrice;
     private int limitOfEnrollment;
-    private boolean offLine;
-    private boolean free;
 
-    @Enumerated(EnumType.STRING)
-    private EventStatus eventStatus = EventStatus.DRAFT;
 }
