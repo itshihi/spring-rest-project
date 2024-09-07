@@ -33,6 +33,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-hateoas'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation("org.modelmapper:modelmapper:3.1.1")
+    implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
+
+    implementation 'jakarta.validation:jakarta.validation-api:3.0.0'
+    implementation 'org.hibernate.validator:hibernate-validator:7.0.0.Final'
 
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.h2database:h2'
@@ -45,9 +49,12 @@ dependencies {
 //    testImplementation 'com.h2database:h2' // 테스트할 때만 실행
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-    // spring-batch 관련 설정
-    implementation 'org.springframework.boot:spring-boot-starter-batch'
-    testImplementation 'org.springframework.batch:spring-batch-test'
+
+
+
+    // InfluxDB 관련 설정
+    implementation 'com.influxdb:influxdb-client-java:7.2.0'
+
 
 }
 
