@@ -109,5 +109,27 @@ public class EventControllerTests {
 
     }
 
+    @Test
+    public void createEvent_Bad_Request_Wrong_Input() throws Exception {
+        EventDTO eventDTO = EventDTO.builder()
+                .name("Spring")
+                .description("This is a Spring")
+                .beginEnrollmentDateTime(LocalDateTime.of(2024, 9, 15, 10, 45)) // 시작일이 종료일보다 이후
+                .endEnrollmentDateTime(LocalDateTime.of(2024, 9, 4, 10, 45))
+                .beginEventDateTime(LocalDateTime.of(2024, 9, 27, 18, 0))
+                .endEventDateTime(LocalDateTime.of(2024, 9, 7, 21, 0))
+                .basePrice(100) // max가 base보다 작음
+                .maxPrice(50)
+                .limitOfEnrollment(100)
+                .location("정자역")
+                .build();
+
+        this.mockMvc.perform(post("/api/events")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(this.jacksonObjectMapper.writeValueAsString(eventDTO)))
+                .andExpect(status().isBadRequest());
+    }
+
+
 
 }
