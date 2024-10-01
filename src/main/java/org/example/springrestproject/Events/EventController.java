@@ -36,16 +36,18 @@ public class EventController {
     }
 
     @PostMapping
-    public ResponseEntity createEvent(@RequestBody @Valid EventDTO eventDto, Errors errors) {
+    public ResponseEntity<?> createEvent(@RequestBody @Valid EventDTO eventDto, Errors errors) {
         if (errors.hasErrors()){
             return ResponseEntity.badRequest().build();
         }
 
-        eventValidator.validateEvent(eventDto, errors);
+        eventValidator.validateEvent(eventDto, errors); // DTO 데이터 검증
         if(errors.hasErrors()){
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(errors);
         }
+
         Event event = modelMapper.map(eventDto, Event.class); // modelmapper를 통해 dto를 event타입의 class 형태로 변환
+        event.update(); // free와 offline 검증
         Event newEvent = this.eventRepository.save(event); // 저장된 객체 newEvent
 
         URI createdUri =linkTo(EventController.class).slash(newEvent.getId()).toUri(); // 링크를 만들고 linkTo로 URL 생성한다.

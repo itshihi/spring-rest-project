@@ -48,6 +48,8 @@ dependencies {
 
 //    testImplementation 'com.h2database:h2' // 테스트할 때만 실행
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation("pl.pragmatists:JUnitParams:1.0.4")
+
 
 
 
